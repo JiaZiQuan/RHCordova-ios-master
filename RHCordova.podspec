@@ -15,18 +15,18 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
   spec.name         = "RHCordova"
-  spec.version      = "0.0.1"
+  spec.version      = "0.0.2"
   spec.summary      = "RHCordova."
-  spec.homepage     = "https://github.com/JiaZiQuan/RHCordova-ios-master.git"
+  spec.homepage     = "https://github.com/JiaZiQuan/RHCordova-ios-master"
   spec.license      = { :type => "Apache 2.0", :file => "LICENSE" }
   spec.author             = { "JiaZiQuan" => "853453714@qq.com" }
   spec.platform     = :ios, "11.0"
-  spec.source       =  { :git => "https://github.com/JiaZiQuan/RHCordova-ios-master.git", :tag => "0.0.1"}
+  spec.source       =  { :git => "https://github.com/JiaZiQuan/RHCordova-ios-master.git", :tag => "0.0.2"}
   spec.requires_arc = true   
   spec.preserve_paths = 'CordovaLib/cordova.js', 'CordovaLib/VERSION'       
   spec.frameworks = 'Photos', 'CoreServices', 'AVFoundation', 'CoreLocation'
-  spec.default_subspec  = 'RHCordova'
-  spec.subspec 'RHCordova' do |cordova|
+  spec.default_subspec  = 'RHWKCordova'
+  spec.subspec 'RHWKCordova' do |cordova|
       cordova.source_files = 'CordovaLib/Classes/**/*.{h,m}', 'CordovaLib/Cordova/Cordova.h'
       cordova.public_header_files = 'CordovaLib/Classes/Public/CDV.h', 'CordovaLib/Classes/Public/CDVAppDelegate.h', 'CordovaLib/Classes/Public/CDVAvailability.h', 'CordovaLib/Classes/Public/CDVAvailabilityDeprecated.h', 'CordovaLib/Classes/Public/CDVCommandDelegate.h', 'CordovaLib/Classes/Public/CDVCommandDelegateImpl.h', 'CordovaLib/Classes/Public/CDVCommandQueue.h', 'CordovaLib/Classes/Public/CDVConfigParser.h', 'CordovaLib/Classes/Public/CDVInvokedUrlCommand.h', 'CordovaLib/Classes/Public/CDVPlugin+Resources.h', 'CordovaLib/Classes/Public/CDVPlugin.h', 'CordovaLib/Classes/Public/CDVPluginResult.h', 'CordovaLib/Classes/Public/CDVScreenOrientationDelegate.h', 'CordovaLib/Classes/Public/CDVTimer.h', 'CordovaLib/Classes/Public/CDVViewController.h', 'CordovaLib/Classes/Public/CDVWebViewEngineProtocol.h', 'CordovaLib/Classes/Private/Plugins/CDVWebViewEngine/CDVWebViewUIDelegate.h', 'CordovaLib/Classes/Public/CDVWhitelist.h', 'CordovaLib/Cordova/Cordova.h', 'CordovaLib/Classes/Public/NSDictionary+CordovaPreferences.h', 'CordovaLib/Classes/Public/NSMutableArray+QueueAdditions.h'
       cordova.prefix_header_contents = ''
