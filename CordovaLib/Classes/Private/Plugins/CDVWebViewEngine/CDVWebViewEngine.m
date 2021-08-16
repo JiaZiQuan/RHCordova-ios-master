@@ -76,6 +76,12 @@ static NSString * SSO_URL = @"/ruaho_sso_listener.html";
     if (settings == nil) {
         return configuration;
     }
+    configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
+    configuration.suppressesIncrementalRendering = YES; // 是否支持记忆读取
+    [configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+    if (@available(iOS 10.0, *)) {
+        [configuration setValue:@YES forKey:@"allowUniversalAccessFromFileURLs"];
+    }
     configuration.allowsInlineMediaPlayback = [settings cordovaBoolSettingForKey:@"AllowInlineMediaPlayback" defaultValue:NO];
 
     // Set the media types that are required for user action for playback

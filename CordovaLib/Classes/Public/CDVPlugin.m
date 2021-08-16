@@ -73,10 +73,22 @@ NSString* const CDVSSOURLNotification = @"CDVSSOURLNotification";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:CDVPluginHandleOpenURLNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURLWithApplicationSourceAndAnnotation:) name:CDVPluginHandleOpenURLWithAppSourceAndAnnotationNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReset) name:CDVPluginResetNotification object:theWebViewEngine.engineWebView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:)
+                  name:UIApplicationWillResignActiveNotification object:nil];
+                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:)
+                 name:UIApplicationDidBecomeActiveNotification object:nil];
+
 
         self.webViewEngine = theWebViewEngine;
     }
     return self;
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification{
+    self.hasPendingOperation = NO;
+}
+- (void)applicationWillResignActive:(NSNotification *)notification{
+    self.hasPendingOperation = YES;
 }
 
 - (void)pluginInitialize
