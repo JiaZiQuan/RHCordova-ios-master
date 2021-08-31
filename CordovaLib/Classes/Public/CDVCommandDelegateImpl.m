@@ -70,43 +70,48 @@
     _delayResponses = NO;
 }
 
-- (void)evalJsHelper2:(NSString*)js
-{
+- (void)evalJsHelper2:(NSString*)js forCallBack:(BOOL)forCallBack{
     CDV_EXEC_LOG(@"Exec: evalling: %@", [js substringToIndex:MIN([js length], 160)]);
     [_viewController.webViewEngine evaluateJavaScript:js completionHandler:^(id obj, NSError* error) {
         // TODO: obj can be something other than string
+        if (!forCallBack) {
+            return;
+        }
         if ([obj isKindOfClass:[NSString class]]) {
             NSString* commandsJSON = (NSString*)obj;
             if ([commandsJSON length] > 0) {
                 CDV_EXEC_LOG(@"Exec: Retrieved new exec messages by chaining.");
             }
-
             [self->_commandQueue enqueueCommandBatch:commandsJSON];
             [self->_commandQueue executePending];
         }
     }];
 }
 
+- (void)evalJsHelper2:(NSString*)js
+{
+    [self evalJsHelper2:js forCallBack:YES];
+}
+
+- (void)evalJsHelper:(NSString*)js forCallBack:(BOOL)forCallBack{
+    if (_delayResponses || ![NSThread isMainThread] || !_commandQueue.currentlyExecuting) {
+        if (forCallBack) {
+            [self performSelectorOnMainThread:@selector(evalJsHelper:) withObject:js waitUntilDone:NO];
+        } else {
+            [self performSelectorOnMainThread:@selector(evalJsHelper2ForNoCallBack:) withObject:js waitUntilDone:NO];
+        }
+    } else {
+        [self evalJsHelper2:js forCallBack:forCallBack];
+    }
+}
+
+-(void)evalJsHelper2ForNoCallBack:(NSString*)js{
+    [self evalJsHelper2:js forCallBack:NO];
+}
+
 - (void)evalJsHelper:(NSString*)js
 {
-    // Cycle the run-loop before executing the JS.
-    // For _delayResponses -
-    //    This ensures that we don't eval JS during the middle of an existing JS
-    //    function (possible since WKWebViewDelegate callbacks can be synchronous).
-    // For !isMainThread -
-    //    It's a hard error to eval on the non-UI thread.
-    // For !_commandQueue.currentlyExecuting -
-    //     This works around a bug where sometimes alerts() within callbacks can cause
-    //     dead-lock.
-    //     If the commandQueue is currently executing, then we know that it is safe to
-    //     execute the callback immediately.
-    // Using    (dispatch_get_main_queue()) does *not* fix deadlocks for some reason,
-    // but performSelectorOnMainThread: does.
-    if (_delayResponses || ![NSThread isMainThread] || !_commandQueue.currentlyExecuting) {
-        [self performSelectorOnMainThread:@selector(evalJsHelper2:) withObject:js waitUntilDone:NO];
-    } else {
-        [self evalJsHelper2:js];
-    }
+    [self evalJsHelper2:js forCallBack:YES];
 }
 
 - (BOOL)isValidCallbackId:(NSString*)callbackId
@@ -122,8 +127,7 @@
     return YES;
 }
 
-- (void)sendPluginResult:(CDVPluginResult*)result callbackId:(NSString*)callbackId
-{
+- (void)sendPluginResult:(CDVPluginResult*)result callbackId:(NSString*)callbackId forCallBack:(BOOL)callBack{
     CDV_EXEC_LOG(@"Exec(%@): Sending result. Status=%@", callbackId, result.status);
     // This occurs when there is are no win/fail callbacks for the call.
     if ([@"INVALID" isEqualToString:callbackId]) {
@@ -145,7 +149,12 @@
 
     NSString* js = [NSString stringWithFormat:@"cordova.require('cordova/exec').nativeCallback('%@',%d,%@,%d, %d)", callbackId, status, argumentsAsJSON, keepCallback, debug];
 
-    [self evalJsHelper:js];
+    [self evalJsHelper:js forCallBack:callBack];
+}
+
+- (void)sendPluginResult:(CDVPluginResult*)result callbackId:(NSString*)callbackId
+{
+    [self sendPluginResult:result callbackId:callbackId forCallBack:YES];
 }
 
 - (void)evalJs:(NSString*)js

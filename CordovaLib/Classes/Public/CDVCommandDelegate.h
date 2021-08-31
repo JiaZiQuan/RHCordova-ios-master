@@ -33,7 +33,8 @@ typedef NSURL* (^ UrlTransformerBlock)(NSURL*);
 
 - (NSString*)pathForResource:(NSString*)resourcepath;
 - (id)getCommandInstance:(NSString*)pluginName;
-
+//新增参数解决插件乱调用问题
+- (void)sendPluginResult:(CDVPluginResult*)result callbackId:(NSString*)callbackId forCallBack:(BOOL)callBack;
 // Sends a plugin result to the JS. This is thread-safe.
 - (void)sendPluginResult:(CDVPluginResult*)result callbackId:(NSString*)callbackId;
 // Evaluates the given JS. This is thread-safe.
