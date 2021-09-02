@@ -15,13 +15,13 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
   spec.name         = "RHCordova"
-  spec.version      = "0.0.2"
+  spec.version      = "0.0.3"
   spec.summary      = "RHCordova."
   spec.homepage     = "https://github.com/JiaZiQuan/RHCordova-ios-master"
   spec.license      = { :type => "Apache 2.0", :file => "LICENSE" }
   spec.author             = { "JiaZiQuan" => "853453714@qq.com" }
   spec.platform     = :ios, "11.0"
-  spec.source       =  { :git => "https://github.com/JiaZiQuan/RHCordova-ios-master.git", :tag => "0.0.2"}
+  spec.source       =  { :git => "https://github.com/JiaZiQuan/RHCordova-ios-master.git", :tag => "0.0.3"}
   spec.requires_arc = true   
   spec.preserve_paths = 'CordovaLib/cordova.js', 'CordovaLib/VERSION'       
   spec.frameworks = 'Photos', 'CoreServices', 'AVFoundation', 'CoreLocation'
